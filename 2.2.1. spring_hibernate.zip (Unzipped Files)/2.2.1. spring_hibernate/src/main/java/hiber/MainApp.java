@@ -40,6 +40,8 @@ public class MainApp {
 
       System.out.println("Кто владеет \"LEXUS 570\"?");
       System.out.println(userService.findOwner("LEXUS", 570));
+      System.out.println();
+      System.out.println();
       userService.deleteAllUsers();
       context.close();
    }

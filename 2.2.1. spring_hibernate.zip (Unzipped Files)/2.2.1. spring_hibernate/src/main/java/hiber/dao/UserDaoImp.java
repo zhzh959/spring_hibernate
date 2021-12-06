@@ -47,28 +47,19 @@ public class UserDaoImp implements UserDao {
     @SuppressWarnings("unchecked")
     public void deleteAllUsers() {
         List<User> users = listUsers();
-        for (User user: users) {
+        for (User user : users) {
             sessionFactory.getCurrentSession().delete(user);
         }
     }
 
-
-
     @Override
-    public User findOwner(String car_name, int car_series) {
-        TypedQuery<Car> findCarQuery = sessionFactory.getCurrentSession().createQuery("from Car where model = :car_name and series = :car_series")
-                .setParameter("car_name", car_name)
-                .setParameter("car_series", car_series);
-        List<Car> findCarList = findCarQuery.getResultList();
-        if (!findCarList.isEmpty()) {
-            Car findCar = findCarList.get(0);
-            List<User> ListUser = listUsers();
-            User findUser = ListUser.stream()
-                    .filter(user -> user.getCar().equals(findCar))
-                    .findAny()
-                    .orElse(null);
-            return findUser;
-        }
-        return null;
+    public User findOwner(String car_model, int car_series) {
+        Session session = sessionFactory.getCurrentSession();
+        String HQL = "FROM User user LEFT OUTER JOIN FETCH user.car WHERE model=:model and series=:series";
+        User user = (User) session.createQuery(HQL, User.class).setParameter("model", car_model).
+                setParameter("series", car_series).uniqueResult();
+        return user;
     }
 }
+
+
